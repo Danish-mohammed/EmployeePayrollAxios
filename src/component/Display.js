@@ -11,7 +11,7 @@ import EmployeeService from "../Service/EmployeeService";
 const Display = (props) => {
 
   const update = (employeeId) => {
-    props.history.push(`payroll-form/${employeeId}`);
+    props.history.push(`Employeeform/${employeeId}`);
   };
 
   const remove = (employeeId) => {
@@ -35,61 +35,64 @@ const Display = (props) => {
    
     return (
       <table id="display" className="display">
-        <thead>
+        <tbody>
               
-          <tr key={-1}>
+          <tr>
             <th>Profile Image</th>
             <th>Name</th>
             <th>Gender</th>
             <th>Departments</th>
             <th>Salary</th>
             <th>Start Date</th>
+            <th>Notes</th>
             <th>Actions</th>
           </tr>
-          </thead>
-          <tbody>
-          {props.employeeList &&
-            props.employeeList.map((element, id) => (
-              <tr key={id}>
-                <td><img className="profile" 
-                src={
-                  element.profilePic ===
-                  "../../assets/profile-images/Ellipse -3.png"
-                    ? profile1
-                    : element.profilePic ===
-                      "../../assets/profile-images/Ellipse -1.png"
-                    ? profile2
-                    : element.profilePic ===
-                      "../../assets/profile-images/Ellipse -4.png"
-                    ? profile3
-                    : profile4
-                }
-                alt=""
-              />
-                </td>
-                <td>{element.name}</td>
-                <td className="gender">{element.gender}</td>
-                <td>
-                  {element.departments &&
-                    element.departments.map((dept) => (
-                      <div className="dept-label">{dept}</div>
-                    ))}
-                </td>
-                <td> ₹ {element.salary}</td>
-                <td>{element.startDate}</td>
-                <td>
-                  <img onClick={() => remove(element.empId)}
-                  src={deleteIcon}
-                  alt="delete"
-                />
-                <img
-                  onClick={() => update(element.empId)}
-                  src={editIcon}
-                  alt="edit" />
-                </td>
-              </tr>
-            ))}
-        </tbody>
+          {
+              props.employeeArray &&
+                props.employeeArray.map((employees) => (
+                  <tr>
+                    <td><img className="profile" 
+                      src={
+                        employees.profilePic ===
+                        "../../assets/profile-images/Ellipse -3.png"
+                          ? profile1
+                          : employees.profilePic ===
+                            "../../assets/profile-images/Ellipse -1.png"
+                          ? profile2
+                          : employees.profilePic ===
+                            "../../assets/profile-images/Ellipse -8.png"
+                          ? profile3
+                          : profile4
+                      }
+                      alt=""
+                      />
+                    </td>
+                   
+                    <td>{employees.name}</td>
+                    <td className="gender">{employees.gender}</td>
+                    <td>
+                      {employees.departments &&
+                        employees.departments.map((dept) => (
+                          <div className="dept-label">{dept}</div>
+                        ))}
+                    </td>
+                    <td> ₹ {employees.salary}</td>
+                    <td>{employees.startDate}</td>
+                    <td>{employees.note}</td>
+                    <td>
+                      <img onClick={() => remove(employees.empId)}
+                      src={deleteIcon}
+                      alt="delete"
+                    />
+                    <img
+                      onClick={() => update(employees.empId)}
+                      src={editIcon}
+                      alt="edit" />
+                    </td>
+                  </tr>
+                ))
+            }
+          </tbody>
       </table>
     );
   };

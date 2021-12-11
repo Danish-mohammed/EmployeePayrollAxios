@@ -25,7 +25,7 @@ class EmployeeHome extends Component {
       }
     
       getAllEmployee = () => {
-        EmployeeService.getAllEmployee()
+        EmployeeService.getAllEmployees()
           .then((response) => {
             this.setState({
               employeeArray: response.data.data,
@@ -33,7 +33,7 @@ class EmployeeHome extends Component {
             });
           })
           .catch((err) => {
-          alert("err after ", err);
+          alert("error after ", err);
           });
       };
     

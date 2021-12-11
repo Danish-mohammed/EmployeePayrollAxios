@@ -6,8 +6,8 @@ import profile4 from '../Assets/profile-images/Ellipse -7.png';
 import './EmployeeForm.css';
 import logo from '../Assets/images/logo.png'
 import { useParams, Link } from 'react-router-dom';
-import EmployeeService from '../Service/EmployeeService';
-import { ToastContainer, toast } from 'react-toastify';
+import EmployeeService from '../../src/Service/EmployeeService';
+import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Employeeform = (props) => {
@@ -33,8 +33,18 @@ const Employeeform = (props) => {
         notes: '',
         id: '',
         profilePic: '',
+        isUpdate: false,
+        error: {
+            department: '',
+            name: '',
+            gender: '',
+            salary: '',
+            profilePic: '',
+            startDate: ''
+        }
         
     }
+    
     const [formValue, setForm] = useState(initialValue);
     const params = useParams();
 
@@ -91,88 +101,84 @@ const Employeeform = (props) => {
         return formValue.departmentValue && formValue.departmentValue.includes(name);
     }
 
-    // const handleValidations = async () => {
-    //     let isError = false;
-    //     let error = {
-    //         department: '',
-    //         name: '',
-    //         gender: '',
-    //         salary: '',
-    //         profilePic: '',
-    //         startDate: ''
-    //     }
-    //     if (!formValue.name.match('^[A-Z]{1}[a-z]{2,}([ ][A-Z]{1}[a-z]{2,})?$')) {
-    //         error.name = 'Name is Invalid!!'
-    //         isError = true;
-    //     }
-    //     if (formValue.gender.length < 1) {
-    //         error.gender = 'Gender is a required field'
-    //         isError = true;
-    //     }
+    const handleValidations = async () => {
+        let isError = false;
+        let error = {
+            department: '',
+            name: '',
+            gender: '',
+            salary: '',
+            profilePic: '',
+            startDate: ''
+        }
+        if (!formValue.name.match('^[A-Z]{1}[a-z]{2,}([ ][A-Z]{1}[a-z]{2,})?$')) {
+            error.name = 'Name is Invalid!!'
+            isError = true;
+        }
+        if (formValue.gender.length < 1) {
+            error.gender = 'Gender is a required field'
+            isError = true;
+        }
         
-    //     if ((formValue.salary.valueOf()<30000)||(formValue.salary.valueOf()>50000)) {
-    //         error.salary = 'Salary should be between 30,000 and 50,000!!'
-    //         isError = true;
-    //     }
-    //     if (formValue.profilePic.length < 1) {
-    //         error.profilePic = 'Profile is a required field'
-    //         isError = true;
-    //     }
+        if ((formValue.salary.valueOf()<30000)||(formValue.salary.valueOf()>50000)) {
+            error.salary = 'Salary should be between 30,000 and 50,000!!'
+            isError = true;
+        }
+        if (formValue.profilePic.length < 1) {
+            error.profilePic = 'Profile is a required field'
+            isError = true;
+        }
 
-    //     if (formValue.departmentValue.length < 1) {
-    //         error.department = 'Department is a required field'
-    //         isError = true;
-    //     }
-    //     var day = formValue.day.valueOf();
-    //     var month = formValue.month.valueOf();
-    //     var year = formValue.year.valueOf();
-    //     var date = new Date(day+"-"+month+"-"+year);
-    //     var nowDate = Date.now();
-    //     if(date>nowDate){
-    //         error.startDate = "StartDate is a future Date!!"
-    //         isError = true;
-    //     }
-    //     if(formValue.notes.length < 1){
-    //         error.notes = "Notes is a required field"
-    //         isError = true;
-    //     }
-    //     setForm({ ...formValue, error: error })
-    //     return isError;
+        if (formValue.departmentValue.length < 1) {
+            error.department = 'Department is a required field'
+            isError = true;
+        }
+        var day = formValue.day.valueOf();
+        var month = formValue.month.valueOf();
+        var year = formValue.year.valueOf();
+        var date = new Date(day+"-"+month+"-"+year);
+        var nowDate = Date.now();
+        if(date>nowDate){
+            error.startDate = "StartDate is a future Date!!"
+            isError = true;
+        }
+        if(formValue.notes.length < 1){
+            error.notes = "Notes is a required field"
+            isError = true;
+        }
+        setForm({ ...formValue, error: error })
+        return isError;
 
-    // }
+    }
     const save = async (event) => {
         event.preventDefault();
-     
-       
-        let object = {
+        
+           let object = {
             name: formValue.name,
-            department: formValue.departmentValue,
+            departments: formValue.departmentValue,
             gender: formValue.gender,
             salary: formValue.salary,
-            startDate: `${formValue.day}-${formValue.month}-${formValue.year}`,
+            startDate: `${formValue.year}-${formValue.month}-${formValue.day}`,
             note: formValue.notes,
-            id: formValue.id,
-            profilePic: formValue.profilePic,
+            // id: formValue.id,
+            profilePic: formValue.profilePic
           };
-          postDataToServer(object);
-          setForm(initialValue);
-    }
-
-    const postDataToServer = (object) => {
-        EmployeeService.addEmployee(object).then(
-            (response) => {
+         
+            EmployeeService
+              .addEmployee(object)
+              .then(response => {
                 console.log(response);
-                console.log("success");
-                toast.dark("New Record Added successfully.", { position: "top-center" });
-            },
-            (error) => {
+                  toast.dark("Data Added successfully!!",response)
+                // props.history.push("/");
+              })
+              .catch(error => {
                 console.log(error);
-                console.log("error");
-                toast.error("Error occured while adding new record.", { position: "top-center" });
-            }
-        )
+                  toast.dark("WARNING!! Error while adding the data!");
+              });
+          
+        
+     
     }
-  
   
     const reset = () => {
         setForm({ ...initialValue, id: formValue.id, isUpdate: formValue.isUpdate });

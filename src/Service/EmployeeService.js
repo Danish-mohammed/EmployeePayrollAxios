@@ -1,29 +1,23 @@
-import Axios from "axios";
+import axios from 'axios';
 
-const BASE_URL = "http://localhost:8080";
-const ADD_EMPLOYEE_URL = "/home/create";
-const GET_EMPLOYEES_URL = "/home/get/all";
-const GET_EMPLOYEE_URL = "/home/get/";
-const UPDATE_EMPLOYEE_URL = "/home/update/";
-const DELETE_EMPLOYEE_URL = "/home/delete/";
 
 class EmployeeService {
-
-  getAllEmployee() {
-    return Axios.get(BASE_URL + GET_EMPLOYEES_URL);
+      baseUrl= "http://localhost:8080/home";
+  
+  addEmployee(data) {
+    return axios.post(`${this.baseUrl}/create`, data);
   }
-  addEmployee(employee) {
-    return Axios.post(BASE_URL + ADD_EMPLOYEE_URL, employee);
+  getAllEmployees() {
+    return axios.get(`${this.baseUrl}/get/all`);
   }
-  getEmployeeById(employeeId) {
-    return Axios.get(BASE_URL + GET_EMPLOYEE_URL + employeeId);
+  getEmployee(employee_id) {
+    return axios.get(`${this.baseUrl}/get/${employee_id}`);
   }
-  updateEmployee(employee, employeeId) {
-    return Axios.put(BASE_URL + UPDATE_EMPLOYEE_URL + employeeId, employee);
+  updateEmployee(employee_id,data) {
+    return axios.put(`${this.baseUrl}/update/${employee_id}`, data);
   }
-  deleteEmployee(employeeId) {
-    return Axios.delete(BASE_URL + DELETE_EMPLOYEE_URL + employeeId);
+  deleteEmployee(employee_id) {
+    return axios.delete(`${this.baseUrl}/delete/${employee_id}`);
   }
-}
-
+}  
 export default new EmployeeService();
