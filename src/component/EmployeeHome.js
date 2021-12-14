@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 import Display from './Display';
 import searchIcon from "../Assets/icons/search-black-18dp.svg";
 import EmployeeService from '../Service/EmployeeService';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class EmployeeHome extends Component {
     constructor(props) {
@@ -14,12 +15,14 @@ class EmployeeHome extends Component {
         this.state = {
           searchExpand: false,
           employeeArray: [],
-          AllEmployeeArray: [],
+          AllEmployeeArray: []
         };
       }
+
       openSearch = () => {
         this.setState({ searchExpand: true });
       };
+
       componentDidMount() {
         this.getAllEmployee();
       }
@@ -28,24 +31,25 @@ class EmployeeHome extends Component {
         EmployeeService.getAllEmployees()
           .then((response) => {
             this.setState({
-              employeeArray: response.data.data,
-              AllEmployeeArray: response.data.data,
+              employeeArray: response.data,
+              AllEmployeeArray: response.data
             });
+            console.log(response);
+           
           })
           .catch((err) => {
-          alert("error after ", err);
+            toast.error("Something went wrong, while getting all the records", err);
           });
       };
     
-      search = async (event) => {
+      search = (event) => {
         let search = event.target.value;
         
         this.setState({ employeeArray: this.state.AllEmployeeArray });
         let empArray = this.state.employeeArray;
         if (search.trim().length > 0)
-          empArray = empArray.filter(
-            (element) =>
-              element.name.toLowerCase().indexOf(search.toLowerCase()) > -1
+          empArray = empArray.filter(element =>
+              element.name.toLowerCase().indexOf(search.toLowerCase())>-1
           );
         
         this.setState({ employeeArray: empArray });
@@ -88,7 +92,7 @@ class EmployeeHome extends Component {
                         </div>
                         <div class="table-main">
                         <Display 
-                                employeeArray={this.state.employeeArray}
+                                employeeArray={this.state.AllEmployeeArray}
                                 getAllEmployee={this.getAllEmployee}
                          />  
                         </div>

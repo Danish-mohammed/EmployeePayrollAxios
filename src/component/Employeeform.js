@@ -14,10 +14,10 @@ const Employeeform = (props) => {
     let initialValue = {
         name: '',
         profileArray: [
-            { url: '../../assets/profile-images/Ellipse -1.png' },
-            { url: '../../assets/profile-images/Ellipse -3.png' },
-            { url: '../../assets/profile-images/Ellipse -7.png' },
-            { url: '../../assets/profile-images/Ellipse -8.png' }
+            { url: '../../Assets/profile-images/Ellipse -1.png' },
+            { url: '../../Assets/profile-images/Ellipse -3.png' },
+            { url: '../../Assets/profile-images/Ellipse -7.png' },
+            { url: '../../Assets/profile-images/Ellipse -8.png' }
 
         ],
         allDepartment: [
@@ -47,12 +47,13 @@ const Employeeform = (props) => {
     
     const [formValue, setForm] = useState(initialValue);
     const params = useParams();
+    
 
     useEffect(() => {
         if (params.id) {
           getDataById(params.id);
         }
-      });
+      }, []);
 
       const getDataById = (id) => {
         EmployeeService
@@ -67,21 +68,23 @@ const Employeeform = (props) => {
       };
     
     const setData = (obj) => {
-        let array = obj.startDate.split("-");
+       let array=obj.startDate;
+       console.log(array);
+       console.log()
         setForm({
           ...formValue,
           ...obj,
           id: obj.empId,
           name: obj.name,
-          departmentValue: obj.department,
+          departmentValue: obj.departments,
           isUpdate: true,
-          day: array[2],
-          month: array[1],
-          year: array[0],
+          day:array[0]+array[1],
+          month:array[3]+array[4]+array[5],
+          year:array[7]+array[8]+array[9]+array[10],
           notes: obj.note,
         });
       };
-
+      
     const changeValue = (event) => {
         setForm({ ...formValue, [event.target.name]: event.target.value })
 
@@ -89,7 +92,7 @@ const Employeeform = (props) => {
 
     const onCheckChange = (name) => {
         let index = formValue.departmentValue.indexOf(name);
-       
+
         let checkArray = [...formValue.departmentValue]
         if (index > -1)
             checkArray.splice(index, 1)
@@ -97,87 +100,106 @@ const Employeeform = (props) => {
             checkArray.push(name);
         setForm({ ...formValue, departmentValue: checkArray });
     }
+    
     const getChecked = (name) => {
         return formValue.departmentValue && formValue.departmentValue.includes(name);
     }
 
-    const handleValidations = async () => {
-        let isError = false;
-        let error = {
-            department: '',
-            name: '',
-            gender: '',
-            salary: '',
-            profilePic: '',
-            startDate: ''
-        }
-        if (!formValue.name.match('^[A-Z]{1}[a-z]{2,}([ ][A-Z]{1}[a-z]{2,})?$')) {
-            error.name = 'Name is Invalid!!'
-            isError = true;
-        }
-        if (formValue.gender.length < 1) {
-            error.gender = 'Gender is a required field'
-            isError = true;
-        }
+    // const handleValidations = async () => {
+    //     let isError = false;
+    //     let error = {
+    //         departments: '',
+    //         name: '',
+    //         gender: '',
+    //         salary: '',
+    //         profilePic: '',
+    //         startDate: '',
+    //         notes:''
+    //     }
+    //     if (!formValue.name.match('^[A-Z]{1}[a-z]{2,}([ ][A-Z]{1}[a-z]{2,})?$')) {
+    //         error.name = 'Name is Invalid!!'
+    //         isError = true;
+    //     }
+    //     if (formValue.gender.length < 1) {
+    //         error.gender = 'Gender is a required field'
+    //         isError = true;
+    //     }
         
-        if ((formValue.salary.valueOf()<30000)||(formValue.salary.valueOf()>50000)) {
-            error.salary = 'Salary should be between 30,000 and 50,000!!'
-            isError = true;
-        }
-        if (formValue.profilePic.length < 1) {
-            error.profilePic = 'Profile is a required field'
-            isError = true;
-        }
+    //     if ((formValue.salary.valueOf()<30000)||(formValue.salary.valueOf()>50000)) {
+    //         error.salary = 'Salary should be between 30,000 and 50,000!!'
+    //         isError = true;
+    //     }
+    //     if (formValue.profilePic.length < 1) {
+    //         error.profilePic = 'Profile is a required field'
+    //         isError = true;
+    //     }
 
-        if (formValue.departmentValue.length < 1) {
-            error.department = 'Department is a required field'
-            isError = true;
-        }
-        var day = formValue.day.valueOf();
-        var month = formValue.month.valueOf();
-        var year = formValue.year.valueOf();
-        var date = new Date(day+"-"+month+"-"+year);
-        var nowDate = Date.now();
-        if(date>nowDate){
-            error.startDate = "StartDate is a future Date!!"
-            isError = true;
-        }
-        if(formValue.notes.length < 1){
-            error.notes = "Notes is a required field"
-            isError = true;
-        }
-        setForm({ ...formValue, error: error })
-        return isError;
+    //     if (formValue.departmentValue.length < 1) {
+    //         error.departments = 'Department is a required field'
+    //         isError = true;
+    //     }
+    //     var day = formValue.day.valueOf();
+    //     var month = formValue.month.valueOf();
+    //     var year = formValue.year.valueOf();
+    //     var date = new Date(day+" "+month+" "+year);
+    //     var nowDate = Date.now();
+    //     if(date>nowDate){
+    //         error.startDate = "StartDate is a future Date!!"
+    //         isError = true;
+    //     }
+    //     if(formValue.notes.length < 1){
+    //         error.notes = "Notes is a required field"
+    //         isError = true;
+    //     }
+    //     setForm({ ...formValue, error: error })
+    //     return isError;
 
-    }
+    // }
+    
     const save = async (event) => {
         event.preventDefault();
         
-           let object = {
+        let object = {
             name: formValue.name,
             departments: formValue.departmentValue,
             gender: formValue.gender,
             salary: formValue.salary,
-            startDate: `${formValue.year}-${formValue.month}-${formValue.day}`,
+            startDate: `${formValue.day} ${formValue.month} ${formValue.year}`,
             note: formValue.notes,
-            // id: formValue.id,
+            id: formValue.id,
             profilePic: formValue.profilePic
           };
-         
+          
+
+          if (formValue.isUpdate) {
+            EmployeeService
+              .updateEmployee(params.id,object)
+              .then((data) => {
+                  var answer =  window.confirm("Data once modified cannot be restored!! Do you wish to continue?",data);
+                  if(answer === true){
+                    alert("Data updated successfully!");
+                    props.history.push("");
+                  }else{
+                      window.location.reload();
+                  }
+              })
+              .catch((error) => {
+                toast.error("WARNING!! Error updating the data!",error);
+              });
+          } else {
             EmployeeService
               .addEmployee(object)
-              .then(response => {
+              .then((response) => {
                 console.log(response);
-                  toast.dark("Data Added successfully!!",response)
-                // props.history.push("/");
+                alert("Data Added successfully!!",response)
+                // props.history.push("");
               })
               .catch(error => {
                 console.log(error);
                   toast.dark("WARNING!! Error while adding the data!");
               });
           
-        
-     
+        }     
     }
   
     const reset = () => {
@@ -201,30 +223,30 @@ const Employeeform = (props) => {
                     <div className="row-content">
                         <label className="label text" htmlFor="name">Name</label>
                         <input className="input" type="text" id="name" name="name" value={formValue.name} onChange={changeValue} placeholder="Your name.." />
-                    <error className="error">{formValue.error.name}</error>
+                    {/* <error className="error">{formValue.error.name}</error> */}
                     </div>
                     <div className="row-content">
                         <label className="label text" htmlFor="profilePic">Profile image</label>
                         <div className="profile-radio-content">
                             <label >
-                                <input type="radio" name="profilePic" checked={formValue.profilePic === '../../assets/profile-images/Ellipse -1.png'} value="../../assets/profile-images/Ellipse -1.png" onChange={changeValue} />
+                                <input type="radio" name="profilePic" checked={formValue.profilePic === '../../Assets/profile-images/Ellipse -1.png'} value="../../Assets/profile-images/Ellipse -1.png" onChange={changeValue} />
                                 <img className="profile" src={profile2} alt="profile" />
                             </label>
                             <label >
-                                <input type="radio" name="profilePic" checked={formValue.profilePic === '../../assets/profile-images/Ellipse -3.png'} value="../../assets/profile-images/Ellipse -3.png" onChange={changeValue} />
+                                <input type="radio" name="profilePic" checked={formValue.profilePic === '../../Assets/profile-images/Ellipse -3.png'} value="../../Assets/profile-images/Ellipse -3.png" onChange={changeValue} />
                                 <img className="profile" src={profile1} alt="profile" />
                             </label>
                             <label >
-                                <input type="radio" name="profilePic" checked={formValue.profilePic === '../../assets/profile-images/Ellipse -7.png'} value="../../assets/profile-images/Ellipse -7.png" onChange={changeValue} />
+                                <input type="radio" name="profilePic" checked={formValue.profilePic === '../../Assets/profile-images/Ellipse -7.png'} value="../../Assets/profile-images/Ellipse -7.png" onChange={changeValue} />
                                 <img className="profile" src={profile4} alt="profile" />
                             </label>
                             <label >
-                                <input type="radio" name="profilePic" checked={formValue.profilePic === '../../assets/profile-images/Ellipse -8.png'} value="../../assets/profile-images/Ellipse -8.png" onChange={changeValue} />
+                                <input type="radio" name="profilePic" checked={formValue.profilePic === '../../Assets/profile-images/Ellipse -8.png'} value="../../Assets/profile-images/Ellipse -8.png" onChange={changeValue} />
                                 <img className="profile" src={profile3} alt="profile" />
                             </label>
 
                         </div>
-                        <error className="error">{formValue.error.profilePic}</error>
+                        {/* <error className="error">{formValue.error.profilePic}</error> */}
                     </div>
                     <div className="row-content">
                         <label className="label text" htmlFor="gender">Gender</label>
@@ -234,7 +256,7 @@ const Employeeform = (props) => {
                             <input type="radio" id="female" checked={formValue.gender === 'female'} onChange={changeValue} name="gender" value="female" />
                             <label className="text" htmlFor="female">Female</label>
                         </div>
-                        <error className="error">{formValue.error.gender}</error>
+                        {/* <error className="error">{formValue.error.gender}</error> */}
                     </div>
                     <div className="row-content">
                         <label className="label text" htmlFor="departments">Department</label>
@@ -248,13 +270,13 @@ const Employeeform = (props) => {
                             ))}
 
                         </div>
-                        <error className="error">{formValue.error.department}</error>
+                        {/* <error className="error">{formValue.error.department}</error> */}
                     </div>
 
                     <div className="row-content">
                         <label className="label text" htmlFor="salary">Salary</label>
                         <input className="input" type="text" id="salary" name="salary" value={formValue.salary} onChange={changeValue} />
-                        <error className="error">{formValue.error.salary}</error>
+                        {/* <error className="error">{formValue.error.salary}</error> */}
                     </div>
 
                     <div className="row-content">
@@ -319,14 +341,14 @@ const Employeeform = (props) => {
                                 <option value="2016">2016</option>
                             </select>
                         </div>
-                        <error className="error">{formValue.error.startDate}</error>
+                        {/* <error className="error">{formValue.error.startDate}</error> */}
                     </div>
 
                     <div className="row-content">
                         <label className="label text" htmlFor="notes">Notes</label>
                         <textarea onChange={changeValue} id="notes" value={formValue.notes} className="input" name="notes" placeholder=""
                             style={{ height: '120%' }}></textarea>
-                    <error className="error">{formValue.error.notes}</error>
+                    {/* <error className="error">{formValue.error.notes}</error> */}
                     </div>
 
                     <div className="buttonParent">
